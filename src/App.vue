@@ -1,103 +1,103 @@
-<template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="glossy">
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-          icon="fas fa-bars"
-        />
-
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-2"
-    >
-      <q-list>
-        <q-item-label header>Essential Links</q-item-label>
-        <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
-          <q-item-section avatar>
-            <q-icon name="fas fa-graduation-cap" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Docs</q-item-label>
-            <q-item-label caption>quasar.dev</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://github.com/quasarframework/">
-          <q-item-section avatar>
-            <q-icon name="fas fa-code" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Github</q-item-label>
-            <q-item-label caption>github.com/quasarframework</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://chat.quasar.dev">
-          <q-item-section avatar>
-            <q-icon name="fas fa-comments" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Discord Chat Channel</q-item-label>
-            <q-item-label caption>chat.quasar.dev</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://forum.quasar.dev">
-          <q-item-section avatar>
-            <q-icon name="far fa-clipboard" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Forum</q-item-label>
-            <q-item-label caption>forum.quasar.dev</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://twitter.com/quasarframework">
-          <q-item-section avatar>
-            <q-icon name="fab fa-twitter" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Twitter</q-item-label>
-            <q-item-label caption>@quasarframework</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-drawer>
-
-    <q-page-container>
-      <HelloWorld />
-    </q-page-container>
-  </q-layout>
+<template lang="pug">
+  q-layout(view='hhr LPR lFf')
+    q-header
+      q-toolbar.bg-white.text-dark
+        router-link(to="/")
+          q-icon(name='fas fa-square' color="primary").q-mr-sm
+          b.text-h6.q-mr-sm.gt-sm Jake Armour 
+          span.text-h6.text-weight-light.gt-sm / Web Developer
+        q-space
+        q-btn(router-link to="/" color='dark', flat dense label='About' v-bind:class="{'text-primary' : this.$route.name == 'Home'}").q-mr-md
+        q-btn(router-link to="/resume" color='dark', flat dense label='Resume' v-bind:class="{'text-primary' : this.$route.name == 'Resume'}").q-mr-md.gt-sm
+        q-btn(router-link to="/cv" color='dark', flat dense label='Resume' v-bind:class="{'text-primary' : this.$route.name == 'CV'}").q-mr-md.lt-md
+        q-btn(router-link to="/portfolio" color='dark', flat dense label='Portfolio' v-bind:class="{'text-primary' : this.$route.name == 'Portfolio'}").q-mr-md.gt-sm
+        q-btn(router-link to="/projects" color='dark', flat dense label='Portfolio' v-bind:class="{'text-primary' : this.$route.name == 'Projects'}").q-mr-md.lt-md
+    q-page-container
+      transition(name="fade" mode="out-in"
+        @beforeLeave="beforeLeave"
+        @enter="enter"
+        @afterEnter="afterEnter")
+        router-view
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import 'prism-es6/prism'
+import 'prism-es6/components/prism-markup-templating';
+import 'prism-es6/components/prism-pug';
+import 'prism-es6/components/prism-graphql';
 
 export default {
-  name: 'LayoutDefault',
-
-  components: {
-    HelloWorld
-  },
-
+  name: 'App',
   data () {
     return {
-      leftDrawerOpen: false
+      leftDrawerOpen: false,
+      scrollInfo: {}
+    }
+  },
+  methods: {
+    beforeLeave(element) {
+      this.prevHeight = getComputedStyle(element).height;
+    },
+    enter(element) {
+      const { height } = getComputedStyle(element);
+
+      element.style.height = this.prevHeight;
+
+      setTimeout(() => {
+        element.style.height = height;
+      });
+    },
+    afterEnter(element) {
+      element.style.height = 'auto';
+    },
+    onScroll (info) {
+      this.scrollInfo = info
     }
   }
 }
 </script>
 
 <style>
+.q-carousel__prev-arrow {
+  position: absolute;
+  height: 100px!important;
+  left: 40vw!important;
+  top: 91vh!important;
+}
+.q-carousel__next-arrow {
+  position: absolute;
+  height: 100px!important;
+  right: 40vw!important;
+  top: 91vh!important;
+}
+
+a {
+  text-decoration: none;
+  color: #000
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.3s;
+  transition-property: height, opacity;
+  overflow: hidden;
+  transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0
+}
+
+.q-page-container {
+  padding-top: 0!important;
+}
+.text-h6 {
+  font-family: 'Poppins-SemiBold';
+}
+.text-weight-light {
+  font-family: 'Poppins-Regular';
+}
+body {
+  font-family: 'Avenir'!important;
+}
 </style>
